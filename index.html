@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Note For You</title>
+
+<style>
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(#ffe6f0, #fff5f7);
+    font-family: "Georgia", serif;
+}
+
+.container {
+    width: 360px;
+    background: #fff0f5;
+    border-radius: 16px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+    overflow: hidden;
+}
+
+.screen {
+    padding: 26px;
+    text-align: center;
+    opacity: 1;
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(8px);
+}
+
+h2 {
+    font-weight: normal;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    position: relative;
+}
+
+h2 img {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    animation: bounceBlink 1s ease infinite;
+}
+
+.sparkle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: radial-gradient(circle, #fff7ff, #ffb6c1);
+    border-radius: 50%;
+    opacity: 0.7;
+    pointer-events: none;
+    animation: sparkleMove linear infinite;
+}
+
+@keyframes sparkleMove {
+    0% { transform: translate(0, 0) scale(0.5); opacity: 0.7; }
+    50% { transform: translate(10px, -15px) scale(1); opacity: 1; }
+    100% { transform: translate(20px, -30px) scale(0.5); opacity: 0; }
+}
+
+p {
+    font-size: 15px;
+    line-height: 1.7;
+    text-align: left;
+    color: #333;
+    white-space: pre-line;
+}
+
+input {
+    width: 92%;
+    padding: 11px;
+    margin-top: 16px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+button {
+    margin-top: 18px;
+    padding: 10px 24px;
+    background: #f284b0;
+    color: white;
+    border: none;
+    border-radius: 22px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    background: #e76f90;
+}
+
+.error {
+    color: #c1121f;
+    margin-top: 10px;
+    font-size: 13px;
+}
+
+.hint {
+    color: #777;
+    font-size: 13px;
+    margin-top: 8px;
+    font-style: italic;
+}
+
+.seen {
+    margin-top: 22px;
+    text-align: right;
+    font-size: 12px;
+    color: #888;
+}
+
+@keyframes bounceBlink {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-8px); }
+    60% { transform: translateY(-4px); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Front -->
+    <div class="screen" id="frontPage">
+        <h2>📜 I have a note for you</h2>
+        <button id="openBtn">Open</button>
+    </div>
+
+    <!-- Question -->
+    <div class="screen hidden" id="questionPage">
+        <h2>
+            <img src="anya.png"alt="Anya Chibi"
+            alt="Anya Chibi">
+            Q-The nickname I once gave you!?
+        </h2>
+
+        <input type="password" id="passwordInput" placeholder="Your answer">
+        <button id="continueBtn">Continue</button>
+        <div class="error" id="errorMsg"></div>
+        <div class="hint" id="hintMsg"></div>
+    </div>
+
+    <!-- Letter -->
+    <div class="screen hidden" id="letterPage">
+        <p id="letterText"></p>
+        <div class="seen">Seen • April 🌸</div>
+    </div>
+
+</div>
+
+<script>
+const correctPassword = "anya";
+let attempts = 0;
+
+const frontPage = document.getElementById("frontPage");
+const questionPage = document.getElementById("questionPage");
+const letterPage = document.getElementById("letterPage");
+const errorMsg = document.getElementById("errorMsg");
+const hintMsg = document.getElementById("hintMsg");
+const passwordInput = document.getElementById("passwordInput");
+const letterText = document.getElementById("letterText");
+
+const fullLetter = `Hey, sachii happy birthday! 🎂🎀
+I hope you remember me—if not, that’s okay. April just has this way of bringing certain memories back, and it always makes me think of Your Lie in April, the anime you once told me you loved. I’ve watched it so many times, and somehow it always feels the same—like a piece of music that ends but never really leaves you. Maybe one day, life will give me a chance to share that experience with you, even briefly.
+
+This is a little embarrassing to admit, but I wanted to be honest. In a way, you remind me of Kaori—how she walked into Kōsei’s quiet world and changed it without even trying. Just by being yourself, you sparked something warm and gentle in me. I truly hope you’re happy in your life and that you achieve everything you’re working toward. I’ve seen your digital art account, and your work is genuinely beautiful. Each piece feels emotional, like it has its own rhythm. God bless you.
+
+Sometimes I also think about Emi, and how her quiet encouragement helped Kōsei keep going when things were hard. And Nagi too—her playful kindness, always reminding people that joy can still exist even in heavy moments. In your own way, you carry that same kind of warmth. Something comforting and inspiring, even from a distance.
+
+Thank you if you’ve read this far. I don’t really know how to explain it, but I feel drawn to you—maybe the same way April arrived unexpectedly and changed everything, or how a single melody can stay with you long after it’s played. You’re the first—and probably the last—girl I’ve ever confessed my feelings to. I do have a crush on you, but I don’t want to turn this into any kind of relationship. The anime taught me that some feelings don’t need a future to matter. Sometimes they’re meaningful simply because they exist.
+
+I don’t expect anything from this. I just wanted to be honest. I truly wish you happiness, peace, and success, and I hope your life is filled with color, music, and moments that make your heart feel light—like Kaori’s violin, Emi’s steady presence, and Nagi’s soft laughter.
+
+Take care and stay well Anya.😊
+~Dev💤`;
+
+document.getElementById("openBtn").onclick = () => {
+    frontPage.classList.add("hidden");
+    setTimeout(() => questionPage.classList.remove("hidden"), 300);
+};
+
+document.getElementById("continueBtn").onclick = () => {
+    const input = passwordInput.value.trim().toLowerCase();
+    attempts++;
+
+    if (input === correctPassword) {
+        questionPage.classList.add("hidden");
+        setTimeout(() => {
+            letterPage.classList.remove("hidden");
+            typeLetter();
+        }, 300);
+    } else {
+        errorMsg.textContent = "That doesn’t feel right.";
+        if (attempts >= 2) {
+            hintMsg.textContent = "A soft name, borrowed from something pink and small.";
+        }
+    }
+};
+
+function typeLetter() {
+    let i = 0;
+    letterText.textContent = "";
+    const interval = setInterval(() => {
+        letterText.textContent += fullLetter[i];
+        i++;
+        if (i >= fullLetter.length) clearInterval(interval);
+    }, 18);
+}
+</script>
+
+</body>
+</html>
